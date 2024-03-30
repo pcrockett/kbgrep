@@ -22,6 +22,22 @@ fail() {
     exit 1
 }
 
+sorted() {
+    # run a command and sort its output
+    #
+    # example usage:
+    #
+    #     sorted printf '%s\n%s\n%s\n' c b a
+    #
+    # outputs:
+    #
+    #     a
+    #     b
+    #     c
+    #
+    "${@}" | sort --stable
+}
+
 # shellcheck disable=SC2034  # this function returns data via variables
 capture_output() {
     local stderr_file stdout_file

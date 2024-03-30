@@ -6,7 +6,7 @@ source tests/util.sh
     capture_output kbg --help
     assert_exit_code 0
     # shellcheck disable=SC2016  # dollar signs are supposed to be literal:
-    assert_stdout 'kbg - Knowledgebase grep: A search tool optimized for knowledgebases
+    assert_stdout '^kbg - Knowledgebase grep: A search tool optimized for knowledgebases
 
 Usage:
   kbg TERM\.\.\. \[OPTIONS]
@@ -50,7 +50,7 @@ Examples:
   # Narrow down search results containing the phrase "mac address"
   # Prompt the user to select file(s) and edit them in $EDITOR
   kbg --type markdown --or bash shell \
-    | kbg --select --edit "mac address"
+    | kbg --select --edit "mac address"$
 '
 
     assert_no_stderr
