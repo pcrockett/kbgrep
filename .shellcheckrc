@@ -1,1 +1,2 @@
 external-sources=true
+disable=SC2154  # we use variables that will be defined after bashly runs, or that were created during an eval

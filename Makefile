@@ -12,7 +12,7 @@ test: kbg
 	bats ./tests
 .PHONY: test
 
-kbg: src/bashly.yml src/*.sh
+kbg: src/bashly.yml src/*.sh src/lib/*.sh
 	bashly generate
 
 src/bashly.yml: src/bashly.cue .tool-versions
