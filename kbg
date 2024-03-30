@@ -12,6 +12,8 @@ fi
 # :command.root_command
 root_command() {
   # src/root_command.sh
+  # shellcheck shell=bash
+
   echo "# this file is located in 'src/root_command.sh'"
   echo "# you can edit it freely and regenerate (it will not be overwritten)"
   inspect_args

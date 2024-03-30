@@ -1,7 +1,18 @@
+all: lint test
+.PHONY: all
+
 generate: kbg
 .PHONY: generate
 
-kbg: src/bashly.yml
+lint: kbg
+	shellcheck ./kbg src/*.sh tests/*.sh tests/*.bats
+.PHONY: lint
+
+test: kbg
+	bats ./tests
+.PHONY: test
+
+kbg: src/bashly.yml src/*.sh
 	bashly generate
 
 src/bashly.yml: src/bashly.cue .tool-versions
