@@ -161,8 +161,8 @@ kbg_usage() {
 
     # :command.usage_examples
     printf "%s\n" "Examples:"
-    printf "  \\n  # Search for markdown files that contain BOTH terms \"foo\" and \"bar\"\n  # Prompt the user to select files from the search results\n  # Edit all selected files with \$EDITOR\n  kbg --type markdown --select --edit --and foo bar\n"
-    printf "  \\n  # Search for markdown files containing EITHER \"bash\" OR \"shell\"\n  # Narrow down search results containing the phrase \"mac address\"\n  # Prompt the user to select file(s) and edit them in \$EDITOR\n  kbg --type markdown --or bash shell \ \\n    | kbg --select --edit \"mac address\"\n"
+    printf "  \\n  # Search for markdown files that contain BOTH terms \"foo\" and \"bar\"\n  # Prompt the user to select files from the search results\n  # Edit all selected files with \$EDITOR\n  kbg --type markdown --select --edit foo bar\n"
+    printf "  \\n  # Search for markdown files containing EITHER \"bash\" OR \"shell\"\n  # Narrow down search results containing the phrase \"mac address\"\n  # Prompt the user to select file(s) and edit them in \$EDITOR\n  kbg --type markdown --any bash shell \ \\n    | kbg --select --edit \"mac address\"\n"
     echo
 
   fi

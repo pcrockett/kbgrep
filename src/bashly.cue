@@ -37,14 +37,14 @@ examples: [
 # Search for markdown files that contain BOTH terms "foo" and "bar"
 # Prompt the user to select files from the search results
 # Edit all selected files with \\$EDITOR
-\(bin_name) --type markdown --select --edit --and foo bar
+\(bin_name) --type markdown --select --edit foo bar
 """,
 """
 \\
 # Search for markdown files containing EITHER "bash" OR "shell"
 # Narrow down search results containing the phrase "mac address"
 # Prompt the user to select file(s) and edit them in \\$EDITOR
-\(bin_name) --type markdown --or bash shell \\ \\
+\(bin_name) --type markdown --any bash shell \\ \\
   | \(bin_name) --select --edit "mac address"
 """,
 ]
