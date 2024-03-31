@@ -35,7 +35,14 @@ root_command() {
           rg_options+=(--type "${args[--type]}")
       fi
 
-      rg_command=(rg "${rg_options[@]}")
+      if tty --quiet; then
+          # a tty is connected to stdin. that means we're not getting a file list from stdin. we'll
+          # let ripgrep handle that.
+          rg_command=(rg "${rg_options[@]}")
+      else
+          # a file list is coming from stdin. xargs those files to the ripgrep command.
+          rg_command=(xargs rg "${rg_options[@]}")
+      fi
 
       for t in "${terms[@]}"; do
           escaped_term="$(printf "%q" "${t}")"
@@ -68,16 +75,22 @@ root_command() {
           pipeline+=("${filter_cmd[*]}")
       done
 
-      files_cmd=(rg --files)
-      if [ "${args[--type]:-}" != "" ]; then
-          files_cmd+=(--type "${args[--type]}")
-      fi
-
       if [ "${args[--select]:-}" != "" ]; then
           pipeline+=("${fzf_cmd}")
       fi
 
-      "${files_cmd[@]}" | exec_pipeline "${pipeline[@]}"
+      if tty --quiet; then
+          # a tty is connected to stdin. that means we're not getting a file list from stdin; we need
+          # to generate the file list ourselves.
+          files_cmd=(rg --files)
+          if [ "${args[--type]:-}" != "" ]; then
+              files_cmd+=(--type "${args[--type]}")
+          fi
+          "${files_cmd[@]}" | exec_pipeline "${pipeline[@]}"
+      else
+          # file list is being piped in through stdin
+          exec_pipeline "${pipeline[@]}"
+      fi
   fi
 
 }
