@@ -9,6 +9,8 @@ rg_options=(
     --files-with-matches
 )
 
+fzf_cmd="fzf --multi"
+
 eval "terms=(${args[term]})"
 
 if [ "${args[--or]:-}" != "" ]; then
@@ -21,9 +23,18 @@ if [ "${args[--or]:-}" != "" ]; then
     rg_command=(rg "${rg_options[@]}")
 
     for t in "${terms[@]}"; do
-        rg_command+=(--regexp "${t}")
+        escaped_term="$(printf "%q" "${t}")"
+        # shellcheck disable=SC2206  # intentionally leaving ${escaped_term} unquoted: string splitting not a concern because it's escaped.
+        rg_command+=(--regexp ${escaped_term})
     done
-    "${rg_command[@]}"
+
+    pipeline=("${rg_command[*]}")
+
+    if [ "${args[--select]}" != "" ]; then
+        pipeline+=("${fzf_cmd}")
+    fi
+
+    exec_pipeline "${pipeline[@]}"
 else
     # find files with ALL terms. difficult case, need to pipeline multiple `rg` invocations.
     #
@@ -34,12 +45,12 @@ else
     #         | xargs rg bar
     #
     # ...but we'll do it dynamically with `exec_pipeline`
-    filters=()
+    pipeline=()
     for t in "${terms[@]}"; do
         escaped_term="$(printf "%q" "${t}")"
         # shellcheck disable=SC2206  # intentionally leaving ${escaped_term} unquoted: string splitting not a concern because it's escaped.
         filter_cmd=(xargs rg "${rg_options[@]}" ${escaped_term})
-        filters+=("${filter_cmd[*]}")
+        pipeline+=("${filter_cmd[*]}")
     done
 
     files_cmd=(rg --files)
@@ -47,6 +58,10 @@ else
         files_cmd+=(--type "${args[--type]}")
     fi
 
-    "${files_cmd[@]}" | exec_pipeline "${filters[@]}"
+    if [ "${args[--select]}" != "" ]; then
+        pipeline+=("${fzf_cmd}")
+    fi
+
+    "${files_cmd[@]}" | exec_pipeline "${pipeline[@]}"
 fi
 

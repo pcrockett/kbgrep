@@ -29,3 +29,13 @@ b\.txt
 c\.txt$'
     assert_exit_code 0
 }
+
+@test 'or - space in term - looks for space' {
+    echo "foo bar" > a.txt
+    echo "foobar" > b.txt
+
+    capture_output kbg --or "foo bar"
+    assert_no_stderr
+    assert_stdout '^a\.txt$'
+    assert_exit_code 0
+}
