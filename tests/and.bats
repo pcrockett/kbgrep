@@ -90,3 +90,19 @@ f\.txt$'
     assert_no_stdout
     assert_exit_code 0
 }
+
+@test 'and - always - case insensitive' {
+    echo "Ab" > Ab.txt
+    echo "aB" > aB.txt
+    echo "AB" > AB.txt
+    echo "ab" > ab.txt
+    echo "c" > c.txt
+
+    capture_output sorted kbg a b
+    assert_no_stderr
+    assert_stdout '^ab\.txt
+aB\.txt
+Ab\.txt
+AB\.txt$'
+    assert_exit_code 0
+}

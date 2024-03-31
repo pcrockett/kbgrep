@@ -39,3 +39,15 @@ c\.txt$'
     assert_stdout '^a\.txt$'
     assert_exit_code 0
 }
+
+@test 'or - always - case insensitive' {
+    echo "A" > A.txt
+    echo "b" > b.txt
+    echo "c" > c.txt
+
+    capture_output sorted kbg --or a b
+    assert_no_stderr
+    assert_stdout '^A\.txt
+b\.txt$'
+    assert_exit_code 0
+}

@@ -7,6 +7,7 @@ fi
 rg_options=(
     --fixed-strings
     --files-with-matches
+    --ignore-case
 )
 
 fzf_cmd="fzf --multi"
