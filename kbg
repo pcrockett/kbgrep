@@ -28,7 +28,7 @@ root_command() {
 
   eval "terms=(${args[term]})"
 
-  if [ "${args[--or]:-}" != "" ]; then
+  if [ "${args[--any]:-}" != "" ]; then
       # find files with ANY term. easy case, `rg` supports this natively.
 
       if [ "${args[--type]}" != "" ]; then
@@ -116,12 +116,7 @@ kbg_usage() {
     echo
 
     # :flag.usage
-    printf "  %s\n" "--and, -a"
-    printf "    Return files that contain all terms\n"
-    echo
-
-    # :flag.usage
-    printf "  %s\n" "--or, -o"
+    printf "  %s\n" "--any, -a"
     printf "    Return files that contain at least one term\n"
     echo
 
@@ -312,18 +307,10 @@ parse_requirements() {
         ;;
 
       # :flag.case
-      --and | -a)
+      --any | -a)
 
         # :flag.case_no_arg
-        args['--and']=1
-        shift
-        ;;
-
-      # :flag.case
-      --or | -o)
-
-        # :flag.case_no_arg
-        args['--or']=1
+        args['--any']=1
         shift
         ;;
 

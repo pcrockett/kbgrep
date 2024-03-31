@@ -18,12 +18,8 @@ flags: [{
 	arg:   "FILE_TYPE"
 	help:  "File type as defined by `rg --type-list`"
 }, {
-	long:  "--and"
+	long:  "--any"
 	short: "-a"
-	help:  "Return files that contain all terms"
-}, {
-	long:  "--or"
-	short: "-o"
 	help:  "Return files that contain at least one term"
 }, {
 	long:  "--select"
