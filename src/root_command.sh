@@ -4,11 +4,22 @@ if [ "${KBG_DEBUG:-}" = "true" ]; then
     inspect_args >&2
 fi
 
+rg_options=(
+    --fixed-strings
+    --files-with-matches
+)
+
 eval "terms=(${args[term]})"
 
 if [ "${args[--or]:-}" != "" ]; then
     # find files with ANY term. easy case, `rg` supports this natively.
-    rg_command=(rg --fixed-strings --files-with-matches)
+
+    if [ "${args[--type]}" != "" ]; then
+        rg_options+=(--type "${args[--type]}")
+    fi
+
+    rg_command=(rg "${rg_options[@]}")
+
     for t in "${terms[@]}"; do
         rg_command+=(--regexp "${t}")
     done
@@ -27,9 +38,15 @@ else
     for t in "${terms[@]}"; do
         escaped_term="$(printf "%q" "${t}")"
         # shellcheck disable=SC2206  # intentionally leaving ${escaped_term} unquoted: string splitting not a concern because it's escaped.
-        filter_cmd=(xargs rg --fixed-strings --files-with-matches ${escaped_term})
+        filter_cmd=(xargs rg "${rg_options[@]}" ${escaped_term})
         filters+=("${filter_cmd[*]}")
     done
-    rg --files | exec_pipeline "${filters[@]}"
+
+    files_cmd=(rg --files)
+    if [ "${args[--type]}" != "" ]; then
+        files_cmd+=(--type "${args[--type]}")
+    fi
+
+    "${files_cmd[@]}" | exec_pipeline "${filters[@]}"
 fi
 

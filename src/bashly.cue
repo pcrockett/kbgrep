@@ -12,10 +12,11 @@ args: [{
 }]
 
 flags: [{
+	// TODO: make repeatable
 	long:  "--type"
 	short: "-t"
 	arg:   "FILE_TYPE"
-	help: "File type as defined by `rg --type-list`"
+	help:  "File type as defined by `rg --type-list`"
 }, {
 	long:  "--and"
 	short: "-a"
