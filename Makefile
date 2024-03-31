@@ -12,6 +12,10 @@ test: kbg
 	bats ./tests
 .PHONY: test
 
+install: kbg
+	cp kbg ~/.local/bin
+.PHONY: install
+
 kbg: src/bashly.yml src/*.sh src/lib/*.sh
 	bashly generate
 
