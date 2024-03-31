@@ -31,7 +31,7 @@ root_command() {
   if [ "${args[--any]:-}" != "" ]; then
       # find files with ANY term. easy case, `rg` supports this natively.
 
-      if [ "${args[--type]}" != "" ]; then
+      if [ "${args[--type]:-}" != "" ]; then
           rg_options+=(--type "${args[--type]}")
       fi
 
@@ -45,7 +45,7 @@ root_command() {
 
       pipeline=("${rg_command[*]}")
 
-      if [ "${args[--select]}" != "" ]; then
+      if [ "${args[--select]:-}" != "" ]; then
           pipeline+=("${fzf_cmd}")
       fi
 
@@ -69,11 +69,11 @@ root_command() {
       done
 
       files_cmd=(rg --files)
-      if [ "${args[--type]}" != "" ]; then
+      if [ "${args[--type]:-}" != "" ]; then
           files_cmd+=(--type "${args[--type]}")
       fi
 
-      if [ "${args[--select]}" != "" ]; then
+      if [ "${args[--select]:-}" != "" ]; then
           pipeline+=("${fzf_cmd}")
       fi
 
@@ -365,7 +365,7 @@ parse_requirements() {
 initialize() {
   version="0.1.0"
   long_usage=''
-  set -e
+  set -Eeuo pipefail
 
 }
 

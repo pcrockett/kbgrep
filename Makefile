@@ -16,7 +16,7 @@ install: kbg
 	cp kbg ~/.local/bin
 .PHONY: install
 
-kbg: src/bashly.yml src/*.sh src/lib/*.sh
+kbg: settings.yml src/bashly.yml src/*.sh src/lib/*.sh
 	bashly generate
 
 src/bashly.yml: src/bashly.cue .tool-versions

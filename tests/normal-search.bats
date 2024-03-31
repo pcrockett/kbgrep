@@ -2,6 +2,14 @@
 
 source tests/util.sh
 
+@test 'normal search - no search results - nonzero exit' {
+    echo "a" > a.txt
+    capture_output kbg b
+    assert_no_stderr
+    assert_no_stdout
+    assert_exit_code 1
+}
+
 @test 'normal search - single term - finds files with term' {
     echo "a" > a.txt
     echo "b" > b.txt
@@ -70,7 +78,7 @@ f\.txt$'
     capture_output kbg 'foo bar'
     assert_no_stderr
     assert_no_stdout
-    assert_exit_code 0
+    assert_exit_code 1
 }
 
 @test 'normal search - always - case insensitive' {

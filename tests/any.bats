@@ -2,6 +2,14 @@
 
 source tests/util.sh
 
+@test 'any - no search results - nonzero exit' {
+    echo "a" > a.txt
+    capture_output kbg --any b
+    assert_no_stderr
+    assert_no_stdout
+    assert_exit_code 1
+}
+
 @test 'any - single term - finds files with term' {
     echo "a" > a.txt
     echo "b" > b.txt

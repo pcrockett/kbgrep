@@ -17,7 +17,7 @@ eval "terms=(${args[term]})"
 if [ "${args[--any]:-}" != "" ]; then
     # find files with ANY term. easy case, `rg` supports this natively.
 
-    if [ "${args[--type]}" != "" ]; then
+    if [ "${args[--type]:-}" != "" ]; then
         rg_options+=(--type "${args[--type]}")
     fi
 
@@ -31,7 +31,7 @@ if [ "${args[--any]:-}" != "" ]; then
 
     pipeline=("${rg_command[*]}")
 
-    if [ "${args[--select]}" != "" ]; then
+    if [ "${args[--select]:-}" != "" ]; then
         pipeline+=("${fzf_cmd}")
     fi
 
@@ -55,11 +55,11 @@ else
     done
 
     files_cmd=(rg --files)
-    if [ "${args[--type]}" != "" ]; then
+    if [ "${args[--type]:-}" != "" ]; then
         files_cmd+=(--type "${args[--type]}")
     fi
 
-    if [ "${args[--select]}" != "" ]; then
+    if [ "${args[--select]:-}" != "" ]; then
         pipeline+=("${fzf_cmd}")
     fi
 
