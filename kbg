@@ -24,6 +24,10 @@ root_command() {
       --ignore-case
   )
 
+  if [ "${args[--full-words]:-}" != "" ]; then
+      rg_options+=(--word-regexp)
+  fi
+
   fzf_cmd="fzf --multi"
 
   eval "terms=(${args[term]})"
@@ -131,6 +135,11 @@ kbg_usage() {
     # :flag.usage
     printf "  %s\n" "--any, -a"
     printf "    Return files that contain at least one term\n"
+    echo
+
+    # :flag.usage
+    printf "  %s\n" "--full-words, -w"
+    printf "    Search for full words\n"
     echo
 
     # :flag.usage
@@ -324,6 +333,14 @@ parse_requirements() {
 
         # :flag.case_no_arg
         args['--any']=1
+        shift
+        ;;
+
+      # :flag.case
+      --full-words | -w)
+
+        # :flag.case_no_arg
+        args['--full-words']=1
         shift
         ;;
 

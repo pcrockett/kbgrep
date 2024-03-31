@@ -10,6 +10,10 @@ rg_options=(
     --ignore-case
 )
 
+if [ "${args[--full-words]:-}" != "" ]; then
+    rg_options+=(--word-regexp)
+fi
+
 fzf_cmd="fzf --multi"
 
 eval "terms=(${args[term]})"

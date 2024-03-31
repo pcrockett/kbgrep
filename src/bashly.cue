@@ -22,6 +22,10 @@ flags: [{
 	short: "-a"
 	help:  "Return files that contain at least one term"
 }, {
+	long:  "--full-words"
+	short: "-w"
+	help:  "Search for full words"
+}, {
 	long:  "--select"
 	short: "-s"
 	help: "Interactive file select dialog at end of search"
