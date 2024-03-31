@@ -6,7 +6,6 @@ fi
 
 eval "terms=(${args[term]})"
 
-
 if [ "${args[--or]:-}" != "" ]; then
     # find files with ANY term. easy case, `rg` supports this natively.
     rg_command=(rg --fixed-strings --files-with-matches)
@@ -16,23 +15,21 @@ if [ "${args[--or]:-}" != "" ]; then
     "${rg_command[@]}"
 else
     # find files with ALL terms. difficult case, need to pipeline multiple `rg` invocations.
-    exec_filters() {
-        # thanks to <https://stackoverflow.com/a/63981571/138757> for the idea
-        if [ ${#} -gt 0 ]; then
-            local current="${1}"
-            shift
-            eval "${current}" | exec_filters "${@}"
-        else
-            cat
-        fi
-    }
-
+    #
+    # given search terms "foo" and "bar", we will effectively construct the following pipeline:
+    #
+    #     rg --files \
+    #         | xargs rg foo \
+    #         | xargs rg bar
+    #
+    # ...but we'll do it dynamically with `exec_pipeline`
     filters=()
     for t in "${terms[@]}"; do
         escaped_term="$(printf "%q" "${t}")"
-        filter_cmd=(xargs rg --fixed-strings --files-with-matches "${escaped_term}")
+        # shellcheck disable=SC2206  # intentionally leaving ${escaped_term} unquoted: string splitting not a concern because it's escaped.
+        filter_cmd=(xargs rg --fixed-strings --files-with-matches ${escaped_term})
         filters+=("${filter_cmd[*]}")
     done
-    rg --files | exec_filters "${filters[@]}"
+    rg --files | exec_pipeline "${filters[@]}"
 fi
 

@@ -50,3 +50,43 @@ f" > f.txt
 f\.txt$'
     assert_exit_code 0
 }
+
+@test 'and - funky search terms - escapes properly' {
+    # shellcheck disable=SC2028  # i'm not trying to do escape sequences
+    echo 'foo\bar' > slash.txt
+    echo 'foo"bar' > quote.txt
+    echo 'foo\ bar' > slash-space.txt
+    # shellcheck disable=SC2028  # i'm not trying to do escape sequences
+    echo 'foobar\n' > slash-n.txt
+    echo 'foobar*' > star.txt
+
+    capture_output kbg 'foo\bar'
+    assert_no_stderr
+    assert_stdout '^slash.txt$'
+    assert_exit_code 0
+
+    capture_output kbg 'foo"bar'
+    assert_no_stderr
+    assert_stdout '^quote.txt$'
+    assert_exit_code 0
+
+    capture_output kbg 'foo\ bar'
+    assert_no_stderr
+    assert_stdout '^slash-space.txt$'
+    assert_exit_code 0
+
+    capture_output kbg 'foobar\n'
+    assert_no_stderr
+    assert_stdout '^slash-n.txt$'
+    assert_exit_code 0
+
+    capture_output kbg 'foobar*'
+    assert_no_stderr
+    assert_stdout '^star.txt$'
+    assert_exit_code 0
+
+    capture_output kbg 'foo bar'
+    assert_no_stderr
+    assert_no_stdout
+    assert_exit_code 0
+}
