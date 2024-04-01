@@ -12,11 +12,9 @@ log_stderr() {
 }
 
 log_stderr "program_name=$(basename "${0}")"
-arg_index=0
 for arg in "${@}"; do
     escaped_arg="$(printf '%q' "${arg}")"
-    log_stderr "arg.${arg_index}=${escaped_arg}"
-    arg_index=$((arg_index+1))
+    log_stderr "arg=${escaped_arg}"
 done
 
 if tty --quiet; then
