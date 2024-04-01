@@ -16,7 +16,7 @@ fi
 
 fzf_cmd="fzf --multi"
 
-eval "terms=(${args[term]})"
+terms=("${other_args[@]}")
 
 if [ "${args[--any]:-}" != "" ]; then
     # find files with ANY term. easy case, `rg` supports this natively.

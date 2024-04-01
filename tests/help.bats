@@ -9,7 +9,7 @@ source tests/util.sh
     assert_stdout '^kbg - Knowledgebase grep: A search tool optimized for knowledgebases
 
 Usage:
-  kbg TERM\.\.\. \[OPTIONS]
+  kbg \[OPTIONS] \[--] TERMS\.\.\.
   kbg --help \| -h
   kbg --version \| -v'
 

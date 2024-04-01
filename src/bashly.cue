@@ -7,12 +7,11 @@ dependencies: {
 	rg: "Ripgrep installation instructions: <https://github.com/BurntSushi/ripgrep?tab=readme-ov-file#installation>"
 }
 
-args: [{
-	name:       "term"
-	required:   true
-	help:       "Term to search for"
-	repeatable: true
-}]
+catch_all: {
+	label:    "terms"
+	help:     "Terms to search for"
+	required: true
+}
 
 flags: [{
 	// TODO: make repeatable
