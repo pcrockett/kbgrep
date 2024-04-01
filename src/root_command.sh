@@ -30,6 +30,10 @@ fi
 if [ "${args[--any]:-}" != "" ]; then
     # find files with ANY term. easy case, `rg` supports this natively.
 
+    if [ ${#terms[@]} -eq 0 ]; then
+        panic "Must supply search terms with \`--any\`"
+    fi
+
     if [ "${args[--type]:-}" != "" ]; then
         rg_options+=(--type "${args[--type]}")
     fi

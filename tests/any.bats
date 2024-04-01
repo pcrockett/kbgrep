@@ -68,3 +68,13 @@ b\.txt$'
     assert_stdout '^foo\.txt$'
     assert_exit_code 0
 }
+
+@test 'any - no search terms - errors' {
+    echo "a" > a.txt
+
+    capture_output kbg --any
+    assert_no_stdout
+    # shellcheck disable=SC2016  # i want literal dollar signs
+    assert_stderr '^Must supply search terms with `--any`$'
+    assert_exit_code 1
+}
