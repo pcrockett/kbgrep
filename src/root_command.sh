@@ -14,7 +14,10 @@ if [ "${args[--full-words]:-}" != "" ]; then
     rg_options+=(--word-regexp)
 fi
 
-fzf_cmd="fzf --multi --exit-0"
+fzf_cmd="fzf \
+    --multi --exit-0 \
+    --preview 'bat --color=always --terminal-width \${FZF_PREVIEW_COLUMNS} --wrap never {1}' \
+    --preview-window 'up,70%,border-bottom,+{2}+3/3,~3'"
 
 terms=("${other_args[@]}")
 
@@ -43,7 +46,7 @@ if [ "${args[--any]:-}" != "" ]; then
     pipeline=("${rg_command[*]}")
 
     if [ "${args[--select]:-}" != "" ]; then
-        pipeline+=("${fzf_cmd}")
+        pipeline+=("SHELL=sh ${fzf_cmd}")
     fi
 
     exec_pipeline "${pipeline[@]}"
@@ -66,7 +69,7 @@ else
     done
 
     if [ "${args[--select]:-}" != "" ]; then
-        pipeline+=("${fzf_cmd}")
+        pipeline+=("SHELL=sh ${fzf_cmd}")
     fi
 
     if tty --quiet; then

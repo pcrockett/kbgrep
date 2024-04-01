@@ -19,7 +19,12 @@ assert_mock_args() {
     capture_output kbg a --select
 
     assert_stderr '^program_name=fzf[[:space:]]'
-    assert_mock_args --multi
+
+    # shellcheck disable=SC2016  # i want my dollar signs to be literal
+    assert_mock_args --multi \
+        --preview 'bat\\ .+' \
+        --preview-window 'up\\,.+'
+
     assert_stderr '.*stdin=a\.txt$'
 
     assert_stdout '^a\.txt$'
@@ -35,7 +40,9 @@ assert_mock_args() {
     capture_output kbg a --select --any
 
     assert_stderr '^program_name=fzf[[:space:]]'
-    assert_mock_args --multi
+    assert_mock_args --multi \
+        --preview 'bat\\ .+' \
+        --preview-window 'up\\,.+'
     assert_stderr '.*stdin=a\.txt$'
 
     assert_stdout '^a\.txt$'
