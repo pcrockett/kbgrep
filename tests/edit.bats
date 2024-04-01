@@ -5,7 +5,7 @@ source tests/util.sh
 
 @test 'edit - no search results - does nothing' {
     echo "a" > a.txt
-    export EDITOR='echo "-->"'
+    export EDITOR='echo -->'
     capture_output kbg --edit foobar
     assert_no_stderr
     assert_no_stdout
@@ -14,7 +14,7 @@ source tests/util.sh
 
 @test 'edit - no search results (ANY) - does nothing' {
     echo "a" > a.txt
-    export EDITOR='echo "-->"'
+    export EDITOR='echo -->'
     capture_output kbg --any --edit foobar
     assert_no_stderr
     assert_no_stdout
@@ -23,7 +23,7 @@ source tests/util.sh
 
 @test 'edit - single search result - edits file' {
     echo "a" > a.txt
-    export EDITOR='echo "-->"'
+    export EDITOR='echo -->'
     capture_output kbg --edit a
     assert_no_stderr
     assert_stdout '^--> a\.txt$'
@@ -32,7 +32,7 @@ source tests/util.sh
 
 @test 'edit - single search result (ANY) - edits file' {
     echo "a" > a.txt
-    export EDITOR='echo "-->"'
+    export EDITOR='echo -->'
     capture_output kbg --any --edit a
     assert_no_stderr
     assert_stdout '^--> a\.txt$'
@@ -42,7 +42,7 @@ source tests/util.sh
 @test 'edit - multiple search results - edits files' {
     echo "a" > a.txt
     echo "a" > b.txt
-    export EDITOR='echo "-->"'
+    export EDITOR='echo -->'
     capture_output sorted kbg --edit a
     assert_no_stderr
     assert_stdout '^--> '
@@ -54,7 +54,7 @@ source tests/util.sh
 @test 'edit - multiple search results (ANY) - edits files' {
     echo "a" > a.txt
     echo "a" > b.txt
-    export EDITOR='echo "-->"'
+    export EDITOR='echo -->'
     capture_output sorted kbg --any --edit a
     assert_no_stderr
     assert_stdout '^--> '

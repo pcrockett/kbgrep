@@ -60,12 +60,16 @@ if [ "${args[--any]:-}" != "" ]; then
     fi
 
     if [ "${args[--edit]:-}" != "" ]; then
-        # shellcheck disable=SC2206  # intentionally splitting $EDITOR
-        edit_cmd=(xargs --no-run-if-empty ${EDITOR})
-        pipeline+=("${edit_cmd[*]}")
+        readarray -t files_to_edit < <(exec_pipeline "${pipeline[@]}")
+        if [ ${#files_to_edit[@]} -gt 0 ]; then
+            exec ${EDITOR} "${files_to_edit[@]}"
+        else
+            exit 1
+        fi
+    else
+        exec_pipeline "${pipeline[@]}"
     fi
 
-    exec_pipeline "${pipeline[@]}"
 else
     # find files with ALL terms. difficult case, need to pipeline multiple `rg` invocations.
     #
@@ -88,12 +92,6 @@ else
         pipeline+=("${fzf_cmd}")
     fi
 
-    if [ "${args[--edit]:-}" != "" ]; then
-        # shellcheck disable=SC2206  # intentionally splitting $EDITOR
-        edit_cmd=(xargs --no-run-if-empty ${EDITOR})
-        pipeline+=("${edit_cmd[*]}")
-    fi
-
     if tty --quiet; then
         # a tty is connected to stdin. that means we're not getting a file list from stdin; we need
         # to generate the file list ourselves.
@@ -101,9 +99,17 @@ else
         if [ "${args[--type]:-}" != "" ]; then
             files_cmd+=(--type "${args[--type]}")
         fi
-        "${files_cmd[@]}" | exec_pipeline "${pipeline[@]}"
+        pipeline=("${files_cmd[*]}" "${pipeline[@]}")
+    fi
+
+    if [ "${args[--edit]:-}" != "" ]; then
+        readarray -t files_to_edit < <(exec_pipeline "${pipeline[@]}")
+        if [ ${#files_to_edit[@]} -gt 0 ]; then
+            exec ${EDITOR} "${files_to_edit[@]}"
+        else
+            exit 1
+        fi
     else
-        # file list is being piped in through stdin
         exec_pipeline "${pipeline[@]}"
     fi
 fi
