@@ -96,3 +96,12 @@ Ab\.txt
 AB\.txt$'
     assert_exit_code 0
 }
+
+@test 'normal search - parameter name as term - still works' {
+    echo "--type" > foo.txt
+
+    capture_output kbg -- --type
+    assert_no_stderr
+    assert_stdout '^foo\.txt$'
+    assert_exit_code 0
+}

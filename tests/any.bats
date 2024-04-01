@@ -59,3 +59,12 @@ c\.txt$'
 b\.txt$'
     assert_exit_code 0
 }
+
+@test 'any - parameter name as term - still works' {
+    echo "--type" > foo.txt
+
+    capture_output kbg --any -- --type
+    assert_no_stderr
+    assert_stdout '^foo\.txt$'
+    assert_exit_code 0
+}

@@ -75,7 +75,7 @@ root_command() {
       for t in "${terms[@]}"; do
           escaped_term="$(printf "%q" "${t}")"
           # shellcheck disable=SC2206  # intentionally leaving ${escaped_term} unquoted: string splitting not a concern because it's escaped.
-          filter_cmd=(xargs rg "${rg_options[@]}" ${escaped_term})
+          filter_cmd=(xargs rg "${rg_options[@]}" --regexp ${escaped_term})
           pipeline+=("${filter_cmd[*]}")
       done
 
