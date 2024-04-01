@@ -6,6 +6,7 @@ setup() {
     TEST_HOME="$(mktemp --directory --tmpdir=/tmp kbgrep-home.XXXXXX)"
     mkdir -p "${TEST_HOME}/.local/bin"
     cp kbg "${TEST_HOME}/.local/bin"
+    cp tests/mock.sh "${TEST_HOME}/.local/bin/fzf"
     cp .tool-versions "${TEST_CWD}"
     cd "${TEST_CWD}"
     PATH="${TEST_HOME}/.local/bin:${PATH}"

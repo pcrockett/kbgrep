@@ -14,7 +14,7 @@ if [ "${args[--full-words]:-}" != "" ]; then
     rg_options+=(--word-regexp)
 fi
 
-fzf_cmd="fzf --multi"
+fzf_cmd="fzf --multi --exit-0"
 
 terms=("${other_args[@]}")
 
