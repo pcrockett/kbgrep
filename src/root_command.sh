@@ -22,6 +22,11 @@ fzf_cmd="SHELL=sh fzf \
 
 terms=("${other_args[@]}")
 
+if [ "${args[--edit]:-}" != "" ] && [ "${EDITOR:-}" = "" ]; then
+    # shellcheck disable=SC2016  # i want a literal dollar sign
+    panic '$EDITOR environment variable is not defined.'
+fi
+
 if [ "${args[--any]:-}" != "" ]; then
     # find files with ANY term. easy case, `rg` supports this natively.
 
@@ -50,6 +55,12 @@ if [ "${args[--any]:-}" != "" ]; then
         pipeline+=("${fzf_cmd}")
     fi
 
+    if [ "${args[--edit]:-}" != "" ]; then
+        # shellcheck disable=SC2206  # intentionally splitting $EDITOR
+        edit_cmd=(xargs --no-run-if-empty ${EDITOR})
+        pipeline+=("${edit_cmd[*]}")
+    fi
+
     exec_pipeline "${pipeline[@]}"
 else
     # find files with ALL terms. difficult case, need to pipeline multiple `rg` invocations.
@@ -71,6 +82,12 @@ else
 
     if [ "${args[--select]:-}" != "" ]; then
         pipeline+=("${fzf_cmd}")
+    fi
+
+    if [ "${args[--edit]:-}" != "" ]; then
+        # shellcheck disable=SC2206  # intentionally splitting $EDITOR
+        edit_cmd=(xargs --no-run-if-empty ${EDITOR})
+        pipeline+=("${edit_cmd[*]}")
     fi
 
     if tty --quiet; then
