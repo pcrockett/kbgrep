@@ -3,6 +3,9 @@ let bin_name = "kbg"
 name:    bin_name
 help:    "Knowledgebase grep: A search tool optimized for knowledgebases"
 version: "0.1.0"
+dependencies: {
+	rg: "Ripgrep installation instructions: <https://github.com/BurntSushi/ripgrep?tab=readme-ov-file#installation>"
+}
 
 args: [{
 	name:       "term"

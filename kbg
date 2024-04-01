@@ -307,6 +307,15 @@ parse_requirements() {
     esac
   done
 
+  # :command.dependencies_filter
+  if command -v rg >/dev/null 2>&1; then
+    deps['rg']="$(command -v rg | head -n1)"
+  else
+    printf "missing dependency: rg\n" >&2
+    printf "%s\n" "Ripgrep installation instructions: <https://github.com/BurntSushi/ripgrep?tab=readme-ov-file#installation>" >&2
+    exit 1
+  fi
+
   # :command.command_filter
   action="root"
 
