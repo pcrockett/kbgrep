@@ -10,7 +10,6 @@ dependencies: {
 catch_all: {
 	label:    "terms"
 	help:     "Terms to search for"
-	required: true
 }
 
 flags: [{

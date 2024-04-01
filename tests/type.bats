@@ -55,3 +55,17 @@ foo\.txt$'
     assert_stdout '^foo\.md$'
     assert_exit_code 0
 }
+
+@test 'type - no terms specified - returns list of files' {
+    echo "a" > foo.md
+    echo "a" > bar.md
+    echo "a" > foo.py
+    echo "a" > foo.sh
+    echo "a" > foo.txt
+
+    capture_output sorted kbg --type markdown
+    assert_no_stderr
+    assert_stdout '^bar\.md
+foo\.md$'
+    assert_exit_code 0
+}

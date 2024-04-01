@@ -138,7 +138,7 @@ kbg_usage() {
   fi
 
   printf "%s\n" "Usage:"
-  printf "  kbg [OPTIONS] [--] TERMS...\n"
+  printf "  kbg [OPTIONS] [--] [TERMS...]\n"
   printf "  kbg --help | -h\n"
   printf "  kbg --version | -v\n"
   echo
@@ -417,12 +417,6 @@ parse_requirements() {
 
     esac
   done
-
-  # :command.catch_all_filter
-  if [[ ${#other_args[@]} -eq 0 ]]; then
-    printf "missing required argument: TERMS...\nusage: kbg [OPTIONS] [--] TERMS...\n" >&2
-    exit 1
-  fi
 
 }
 
