@@ -14,7 +14,7 @@ source tests/util.sh
     echo "a" > "1.txt"
     echo "a" > "2.txt"
     echo "a" > "3.txt"
-    capture_output sorted kbg a < <(echo "1.txt" "2.txt")
+    capture_output sorted kbg a < <(printf '%s\n%s' "1.txt" "2.txt")
     assert_no_stderr
     assert_stdout '^1\.txt
 2\.txt$'
@@ -33,7 +33,7 @@ source tests/util.sh
     echo "a" > "1.txt"
     echo "a" > "2.txt"
     echo "a" > "3.txt"
-    capture_output sorted kbg --any a < <(echo "1.txt" "2.txt")
+    capture_output sorted kbg --any a < <(printf '%s\n%s' "1.txt" "2.txt")
     assert_no_stderr
     assert_stdout '^1\.txt
 2\.txt$'

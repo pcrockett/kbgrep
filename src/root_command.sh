@@ -44,7 +44,7 @@ if [ "${args[--any]:-}" != "" ]; then
         rg_command=(rg "${rg_options[@]}")
     else
         # a file list is coming from stdin. xargs those files to the ripgrep command.
-        rg_command=(xargs rg "${rg_options[@]}")
+        rg_command=(xargs_newline rg "${rg_options[@]}")
     fi
 
     for t in "${terms[@]}"; do
@@ -73,7 +73,8 @@ if [ "${args[--any]:-}" != "" ]; then
 else
     # find files with ALL terms. difficult case, need to pipeline multiple `rg` invocations.
     #
-    # given search terms "foo" and "bar", we will effectively construct the following pipeline:
+    # given search terms "foo" and "bar", we will effectively construct the following
+    # (oversimplified) pipeline:
     #
     #     rg --files \
     #         | xargs rg foo \
@@ -84,7 +85,7 @@ else
     for t in "${terms[@]}"; do
         escaped_term="$(printf "%q" "${t}")"
         # shellcheck disable=SC2206  # intentionally leaving ${escaped_term} unquoted: string splitting not a concern because it's escaped.
-        filter_cmd=(xargs rg "${rg_options[@]}" --regexp ${escaped_term})
+        filter_cmd=(xargs_newline rg "${rg_options[@]}" --regexp ${escaped_term})
         pipeline+=("${filter_cmd[*]}")
     done
 

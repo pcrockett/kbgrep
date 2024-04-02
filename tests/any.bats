@@ -78,3 +78,21 @@ b\.txt$'
     assert_stderr '^Must supply search terms with `--any`$'
     assert_exit_code 1
 }
+
+@test 'any - spaces in file names - still works' {
+    echo "a" > "foo bar.txt"
+
+    capture_output kbg --any a
+    assert_no_stderr
+    assert_stdout '^foo bar\.txt$'
+    assert_exit_code 0
+}
+
+@test 'any - spaces in stdin file names - still works' {
+    echo "a" > "foo bar.txt"
+
+    capture_output kbg --any a < <(echo "foo bar.txt")
+    assert_no_stderr
+    assert_stdout '^foo bar\.txt$'
+    assert_exit_code 0
+}
