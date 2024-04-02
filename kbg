@@ -30,6 +30,10 @@ root_command() {
       --preview-window 'up,70%,border-bottom,+{2}+3/3,~3' \
       --bind 'ctrl-j:preview-half-page-down,ctrl-k:preview-half-page-up'"
 
+  if [ "${KBGREP_SELECT:-}" != "" ]; then
+      args[--select]=1
+  fi
+
   terms=("${other_args[@]}")
 
   if [ "${args[--edit]:-}" != "" ] && [ "${EDITOR:-}" = "" ]; then
@@ -195,6 +199,14 @@ kbg_usage() {
     printf "    Terms to search for\n"
     echo
 
+    # :command.usage_environment_variables
+    printf "%s\n" "Environment Variables:"
+
+    # :environment_variable.usage
+    printf "  %s\n" "KBGREP_SELECT"
+    printf "    When set, has the same effect as \`--select\`\n"
+    echo
+
     # :command.usage_examples
     printf "%s\n" "Examples:"
     printf "  \\n  # Search for markdown files that contain BOTH terms \"foo\" and \"bar\"\n  # Prompt the user to select files from the search results\n  # Edit all selected files with \$EDITOR\n  kbg --type markdown --select --edit foo bar\n"
@@ -348,6 +360,10 @@ parse_requirements() {
 
     esac
   done
+
+  # :command.environment_variables_filter
+
+  env_var_names+=("KBGREP_SELECT")
 
   # :command.dependencies_filter
   if command -v rg >/dev/null 2>&1; then

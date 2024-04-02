@@ -16,6 +16,10 @@ fzf_cmd="SHELL=sh fzf \
     --preview-window 'up,70%,border-bottom,+{2}+3/3,~3' \
     --bind 'ctrl-j:preview-half-page-down,ctrl-k:preview-half-page-up'"
 
+if [ "${KBGREP_SELECT:-}" != "" ]; then
+    args[--select]=1
+fi
+
 terms=("${other_args[@]}")
 
 if [ "${args[--edit]:-}" != "" ] && [ "${EDITOR:-}" = "" ]; then

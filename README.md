@@ -84,6 +84,10 @@ Arguments:
   TERMS...
     Terms to search for
 
+Environment Variables:
+  KBGREP_SELECT
+    When set, has the same effect as `--select`
+
 Examples:
 
   # Search for markdown files that contain BOTH terms "foo" and "bar"

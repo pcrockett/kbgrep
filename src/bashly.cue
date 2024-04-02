@@ -36,6 +36,13 @@ flags: [{
 	help: "Edit search results in your \\$EDITOR"
 }]
 
+environment_variables: [
+	{
+		name: "kbgrep_select"
+		help: "When set, has the same effect as `--select`"
+	}
+]
+
 examples: [
 """
 \\

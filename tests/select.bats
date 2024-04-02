@@ -72,3 +72,25 @@ assert_mock_args() {
     assert_no_stdout
     assert_exit_code 1
 }
+
+@test 'select - via env variable - runs fzf' {
+    echo "a" > a.txt
+    export MOCK_STDOUT="this came from fzf"
+    export KBGREP_SELECT=1
+
+    capture_output kbg a
+    assert_stderr '^program_name=fzf[[:space:]]'
+    assert_stdout '^this came from fzf$'
+    assert_exit_code 0
+}
+
+@test 'select - via env variable (ANY) - runs fzf' {
+    echo "a" > a.txt
+    export MOCK_STDOUT="this came from fzf"
+    export KBGREP_SELECT=1
+
+    capture_output kbg --any a
+    assert_stderr '^program_name=fzf[[:space:]]'
+    assert_stdout '^this came from fzf$'
+    assert_exit_code 0
+}
