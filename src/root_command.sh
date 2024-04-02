@@ -1,9 +1,5 @@
 # shellcheck shell=bash
 
-if [ "${KBG_DEBUG:-}" = "true" ]; then
-    inspect_args >&2
-fi
-
 rg_options=(
     --fixed-strings
     --files-with-matches
