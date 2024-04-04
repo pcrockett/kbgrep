@@ -19,10 +19,20 @@ exec_pipeline() {
     #     BAR
     #
     # thanks to <https://stackoverflow.com/a/63981571/138757> for the idea
+    if [ "${KBGREP_INTERACTIVE:-}" = "" ]; then
+        __exec_pipeline "${@}"
+    else
+        # interactive mode: we aren't expecting stdin. if there is any data on stdin,
+        # we should ignore it.
+        __exec_pipeline "${@}" < /dev/null
+    fi
+}
+
+__exec_pipeline() {
     if [ ${#} -gt 0 ]; then
         local current="${1}"
         shift
-        eval "${current}" | exec_pipeline "${@}"
+        eval "${current}" | __exec_pipeline "${@}"
     else
         cat
     fi

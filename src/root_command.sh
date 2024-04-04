@@ -1,5 +1,37 @@
 # shellcheck shell=bash
 
+if [ "${#args[@]}" -eq 0 ] && [ "${#other_args[@]}" -eq 0 ] && [ "${KBGREP_INTERACTIVE:-}" = "" ]; then
+
+    kbg_command="${0}"
+    search_result_command="${EDITOR:-echo}"
+
+    export KBGREP_INTERACTIVE=1
+
+    FZF_DEFAULT_COMMAND="${kbg_command}" \
+        SHELL=sh \
+        fzf --ansi \
+            --disabled \
+            --bind "change:reload(echo {q} | xargs ${kbg_command} || true)" \
+            --bind "ctrl-r:reload(echo {q} | xargs ${kbg_command} || true)" \
+            --bind "ctrl-d:execute(bat --color=always --wrap never --pager 'less --RAW-CONTROL-CHARS --quiet' {})" \
+            --preview "bat --color=always --terminal-width \${FZF_PREVIEW_COLUMNS} --wrap never --paging never {}" \
+            --preview-window 'up,70%,border-bottom,+{2}+3/3,~3' \
+            --bind "enter:become(${search_result_command} {})"
+
+    exit 0
+fi
+
+if [ "${KBGREP_INTERACTIVE:-}" != "" ]; then
+    # handle interactive mode special cases
+
+    if [ "${args[--edit]:-}" != "" ]; then
+        # the user typed --edit in as a search query; treat it as a search term.
+        # we don't want to launch the $EDITOR on every keystroke...
+        unset "args[--edit]"
+        other_args+=("--edit")
+    fi
+fi
+
 rg_options=(
     --fixed-strings
     --files-with-matches
@@ -8,16 +40,6 @@ rg_options=(
 
 if [ "${args[--full-words]:-}" != "" ]; then
     rg_options+=(--word-regexp)
-fi
-
-fzf_cmd="SHELL=sh fzf \
-    --multi --exit-0 \
-    --preview 'bat --color always --terminal-width \${FZF_PREVIEW_COLUMNS} --wrap auto {}' \
-    --preview-window 'up,70%,border-bottom,+{2}+3/3,~3' \
-    --bind 'ctrl-j:preview-half-page-down,ctrl-k:preview-half-page-up'"
-
-if [ "${KBGREP_SELECT:-}" != "" ]; then
-    args[--select]=1
 fi
 
 terms=("${other_args[@]}")
@@ -38,13 +60,18 @@ if [ "${args[--any]:-}" != "" ]; then
         rg_options+=(--type "${args[--type]}")
     fi
 
-    if tty --quiet; then
-        # a tty is connected to stdin. that means we're not getting a file list from stdin. we'll
+    if [ "${KBGREP_INTERACTIVE:-}" != "" ] || tty --quiet; then
+        # either one of these cases may be true:
+        #
+        # * a tty is connected to stdin
+        # * this is being run from the fzf interactive UI
+        #
+        # in either case, we're not getting a file list from stdin; we will
         # let ripgrep handle that.
         rg_command=(rg "${rg_options[@]}")
     else
         # a file list is coming from stdin. xargs those files to the ripgrep command.
-        rg_command=(xargs_newline rg "${rg_options[@]}")
+        rg_command=(xargs_newline --no-run-if-empty rg "${rg_options[@]}")
     fi
 
     for t in "${terms[@]}"; do
@@ -54,10 +81,6 @@ if [ "${args[--any]:-}" != "" ]; then
     done
 
     pipeline=("${rg_command[*]}")
-
-    if [ "${args[--select]:-}" != "" ]; then
-        pipeline+=("${fzf_cmd}")
-    fi
 
     if [ "${args[--edit]:-}" != "" ]; then
         readarray -t files_to_edit < <(exec_pipeline "${pipeline[@]}")
@@ -85,16 +108,17 @@ else
     for t in "${terms[@]}"; do
         escaped_term="$(printf "%q" "${t}")"
         # shellcheck disable=SC2206  # intentionally leaving ${escaped_term} unquoted: string splitting not a concern because it's escaped.
-        filter_cmd=(xargs_newline rg "${rg_options[@]}" --regexp ${escaped_term})
+        filter_cmd=(xargs_newline --no-run-if-empty rg "${rg_options[@]}" --regexp ${escaped_term})
         pipeline+=("${filter_cmd[*]}")
     done
 
-    if [ "${args[--select]:-}" != "" ]; then
-        pipeline+=("${fzf_cmd}")
-    fi
-
-    if tty --quiet; then
-        # a tty is connected to stdin. that means we're not getting a file list from stdin; we need
+    if [ "${KBGREP_INTERACTIVE:-}" != "" ] || tty --quiet; then
+        # either one of these cases may be true:
+        #
+        # * a tty is connected to stdin
+        # * this is being run from the fzf interactive UI
+        #
+        # in either case, we're not getting a file list from stdin; we need
         # to generate the file list ourselves.
         files_cmd=(rg --files)
         if [ "${args[--type]:-}" != "" ]; then

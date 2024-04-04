@@ -8,8 +8,8 @@ dependencies: {
 }
 
 catch_all: {
-	label:    "terms"
-	help:     "Terms to search for"
+	label: "terms"
+	help:  "Terms to search for"
 }
 
 flags: [{
@@ -27,36 +27,29 @@ flags: [{
 	short: "-w"
 	help:  "Search for full words"
 }, {
-	long:  "--select"
-	short: "-s"
-	help: "Interactive file select dialog at end of search"
-}, {
 	long:  "--edit"
 	short: "-e"
 	help: "Edit search results in your \\$EDITOR"
 }]
 
-environment_variables: [
-	{
-		name: "kbgrep_select"
-		help: "When set, has the same effect as `--select`"
-	}
-]
-
 examples: [
 """
 \\
+# Interactive search UI
+\(bin_name)
+""",
+"""
+\\
 # Search for markdown files that contain BOTH terms "foo" and "bar"
-# Prompt the user to select files from the search results
-# Edit all selected files with \\$EDITOR
-\(bin_name) --type markdown --select --edit foo bar
+# Edit search results with \\$EDITOR
+\(bin_name) --type markdown --edit foo bar
 """,
 """
 \\
 # Search for markdown files containing EITHER "bash" OR "shell"
 # Narrow down search results containing the phrase "mac address"
-# Prompt the user to select file(s) and edit them in \\$EDITOR
+# Edit search results with \\$EDITOR
 \(bin_name) --type markdown --any bash shell \\ \\
-  | \(bin_name) --select --edit "mac address"
+  | \(bin_name) --edit "mac address"
 """,
 ]

@@ -19,8 +19,8 @@ and bat underneath.
 ### dependencies
 
 * [ripgrep](https://github.com/BurntSushi/ripgrep)
-* _optional:_ [fzf](https://github.com/junegunn/fzf) and [bat](https://github.com/sharkdp/bat)
-  (if you want to use the `--select` option)
+* [fzf](https://github.com/junegunn/fzf)
+* [bat](https://github.com/sharkdp/bat)
 
 ### installation
 
@@ -28,16 +28,30 @@ If you've installed the dependencies, just download the [kbg script](kbg), `chmo
 
 ### usage
 
-Some examples:
+The best way to use it is interactively. Just run it without parameters:
+
+```bash
+kbg
+```
+
+* Type in your search terms and watch the list of files update as you type.
+* Use Ctrl+D to preview a file
+* Hit enter to open the file in your `$EDITOR`
+
+In interactive mode, you are not only able to search for _terms_ but also supply _CLI arguments_ as
+well.
+
+![](assets/screenshot.png)
+
+Some examples of how to use CLI arguments:
 
 ```bash
 # search for files mentioning both "mac address" and "linux" in the same file
 kbg "mac address" linux
 
 # look for files that remind you how to use `trap` statements in bash.
-# use an interactive dialog to preview and select a subset of files,
 # and then open them in your $EDITOR.
-kbg --select --edit bash trap
+kbg --edit bash trap  # note: in interactive mode, `--edit` is treated as a search term
 
 # find all files that mention "shell" or "bash" scripting in some way
 kbg --any bash shell
@@ -68,9 +82,6 @@ Options:
   --full-words, -w
     Search for full words
 
-  --select, -s
-    Interactive file select dialog at end of search
-
   --edit, -e
     Edit search results in your $EDITOR
 
@@ -84,20 +95,18 @@ Arguments:
   TERMS...
     Terms to search for
 
-Environment Variables:
-  KBGREP_SELECT
-    When set, has the same effect as `--select`
-
 Examples:
 
+  # Interactive search UI
+  kbg
+
   # Search for markdown files that contain BOTH terms "foo" and "bar"
-  # Prompt the user to select files from the search results
-  # Edit all selected files with $EDITOR
-  kbg --type markdown --select --edit foo bar
+  # Edit search results with $EDITOR
+  kbg --type markdown --edit foo bar
 
   # Search for markdown files containing EITHER "bash" OR "shell"
   # Narrow down search results containing the phrase "mac address"
-  # Prompt the user to select file(s) and edit them in $EDITOR
+  # Edit search results with $EDITOR
   kbg --type markdown --any bash shell \
-    | kbg --select --edit "mac address"
+    | kbg --edit "mac address"
 ```

@@ -14,6 +14,38 @@ root_command() {
   # src/root_command.sh
   # shellcheck shell=bash
 
+  if [ "${#args[@]}" -eq 0 ] && [ "${#other_args[@]}" -eq 0 ] && [ "${KBGREP_INTERACTIVE:-}" = "" ]; then
+
+      kbg_command="${0}"
+      search_result_command="${EDITOR:-echo}"
+
+      export KBGREP_INTERACTIVE=1
+
+      FZF_DEFAULT_COMMAND="${kbg_command}" \
+          SHELL=sh \
+          fzf --ansi \
+              --disabled \
+              --bind "change:reload(echo {q} | xargs ${kbg_command} || true)" \
+              --bind "ctrl-r:reload(echo {q} | xargs ${kbg_command} || true)" \
+              --bind "ctrl-d:execute(bat --color=always --wrap never --pager 'less --RAW-CONTROL-CHARS --quiet' {})" \
+              --preview "bat --color=always --terminal-width \${FZF_PREVIEW_COLUMNS} --wrap never --paging never {}" \
+              --preview-window 'up,70%,border-bottom,+{2}+3/3,~3' \
+              --bind "enter:become(${search_result_command} {})"
+
+      exit 0
+  fi
+
+  if [ "${KBGREP_INTERACTIVE:-}" != "" ]; then
+      # handle interactive mode special cases
+
+      if [ "${args[--edit]:-}" != "" ]; then
+          # the user typed --edit in as a search query; treat it as a search term.
+          # we don't want to launch the $EDITOR on every keystroke...
+          unset "args[--edit]"
+          other_args+=("--edit")
+      fi
+  fi
+
   rg_options=(
       --fixed-strings
       --files-with-matches
@@ -22,16 +54,6 @@ root_command() {
 
   if [ "${args[--full-words]:-}" != "" ]; then
       rg_options+=(--word-regexp)
-  fi
-
-  fzf_cmd="SHELL=sh fzf \
-      --multi --exit-0 \
-      --preview 'bat --color always --terminal-width \${FZF_PREVIEW_COLUMNS} --wrap auto {}' \
-      --preview-window 'up,70%,border-bottom,+{2}+3/3,~3' \
-      --bind 'ctrl-j:preview-half-page-down,ctrl-k:preview-half-page-up'"
-
-  if [ "${KBGREP_SELECT:-}" != "" ]; then
-      args[--select]=1
   fi
 
   terms=("${other_args[@]}")
@@ -52,13 +74,18 @@ root_command() {
           rg_options+=(--type "${args[--type]}")
       fi
 
-      if tty --quiet; then
-          # a tty is connected to stdin. that means we're not getting a file list from stdin. we'll
+      if [ "${KBGREP_INTERACTIVE:-}" != "" ] || tty --quiet; then
+          # either one of these cases may be true:
+          #
+          # * a tty is connected to stdin
+          # * this is being run from the fzf interactive UI
+          #
+          # in either case, we're not getting a file list from stdin; we will
           # let ripgrep handle that.
           rg_command=(rg "${rg_options[@]}")
       else
           # a file list is coming from stdin. xargs those files to the ripgrep command.
-          rg_command=(xargs_newline rg "${rg_options[@]}")
+          rg_command=(xargs_newline --no-run-if-empty rg "${rg_options[@]}")
       fi
 
       for t in "${terms[@]}"; do
@@ -68,10 +95,6 @@ root_command() {
       done
 
       pipeline=("${rg_command[*]}")
-
-      if [ "${args[--select]:-}" != "" ]; then
-          pipeline+=("${fzf_cmd}")
-      fi
 
       if [ "${args[--edit]:-}" != "" ]; then
           readarray -t files_to_edit < <(exec_pipeline "${pipeline[@]}")
@@ -99,16 +122,17 @@ root_command() {
       for t in "${terms[@]}"; do
           escaped_term="$(printf "%q" "${t}")"
           # shellcheck disable=SC2206  # intentionally leaving ${escaped_term} unquoted: string splitting not a concern because it's escaped.
-          filter_cmd=(xargs_newline rg "${rg_options[@]}" --regexp ${escaped_term})
+          filter_cmd=(xargs_newline --no-run-if-empty rg "${rg_options[@]}" --regexp ${escaped_term})
           pipeline+=("${filter_cmd[*]}")
       done
 
-      if [ "${args[--select]:-}" != "" ]; then
-          pipeline+=("${fzf_cmd}")
-      fi
-
-      if tty --quiet; then
-          # a tty is connected to stdin. that means we're not getting a file list from stdin; we need
+      if [ "${KBGREP_INTERACTIVE:-}" != "" ] || tty --quiet; then
+          # either one of these cases may be true:
+          #
+          # * a tty is connected to stdin
+          # * this is being run from the fzf interactive UI
+          #
+          # in either case, we're not getting a file list from stdin; we need
           # to generate the file list ourselves.
           files_cmd=(rg --files)
           if [ "${args[--type]:-}" != "" ]; then
@@ -175,11 +199,6 @@ kbg_usage() {
     echo
 
     # :flag.usage
-    printf "  %s\n" "--select, -s"
-    printf "    Interactive file select dialog at end of search\n"
-    echo
-
-    # :flag.usage
     printf "  %s\n" "--edit, -e"
     printf "    Edit search results in your \$EDITOR\n"
     echo
@@ -199,18 +218,11 @@ kbg_usage() {
     printf "    Terms to search for\n"
     echo
 
-    # :command.usage_environment_variables
-    printf "%s\n" "Environment Variables:"
-
-    # :environment_variable.usage
-    printf "  %s\n" "KBGREP_SELECT"
-    printf "    When set, has the same effect as \`--select\`\n"
-    echo
-
     # :command.usage_examples
     printf "%s\n" "Examples:"
-    printf "  \\n  # Search for markdown files that contain BOTH terms \"foo\" and \"bar\"\n  # Prompt the user to select files from the search results\n  # Edit all selected files with \$EDITOR\n  kbg --type markdown --select --edit foo bar\n"
-    printf "  \\n  # Search for markdown files containing EITHER \"bash\" OR \"shell\"\n  # Narrow down search results containing the phrase \"mac address\"\n  # Prompt the user to select file(s) and edit them in \$EDITOR\n  kbg --type markdown --any bash shell \ \\n    | kbg --select --edit \"mac address\"\n"
+    printf "  \\n  # Interactive search UI\n  kbg\n"
+    printf "  \\n  # Search for markdown files that contain BOTH terms \"foo\" and \"bar\"\n  # Edit search results with \$EDITOR\n  kbg --type markdown --edit foo bar\n"
+    printf "  \\n  # Search for markdown files containing EITHER \"bash\" OR \"shell\"\n  # Narrow down search results containing the phrase \"mac address\"\n  # Edit search results with \$EDITOR\n  kbg --type markdown --any bash shell \ \\n    | kbg --edit \"mac address\"\n"
     echo
 
   fi
@@ -311,10 +323,20 @@ exec_pipeline() {
     #     BAR
     #
     # thanks to <https://stackoverflow.com/a/63981571/138757> for the idea
+    if [ "${KBGREP_INTERACTIVE:-}" = "" ]; then
+        __exec_pipeline "${@}"
+    else
+        # interactive mode: we aren't expecting stdin. if there is any data on stdin,
+        # we should ignore it.
+        __exec_pipeline "${@}" < /dev/null
+    fi
+}
+
+__exec_pipeline() {
     if [ ${#} -gt 0 ]; then
         local current="${1}"
         shift
-        eval "${current}" | exec_pipeline "${@}"
+        eval "${current}" | __exec_pipeline "${@}"
     else
         cat
     fi
@@ -361,10 +383,6 @@ parse_requirements() {
     esac
   done
 
-  # :command.environment_variables_filter
-
-  env_var_names+=("KBGREP_SELECT")
-
   # :command.dependencies_filter
   if command -v rg >/dev/null 2>&1; then
     deps['rg']="$(command -v rg | head -n1)"
@@ -408,14 +426,6 @@ parse_requirements() {
 
         # :flag.case_no_arg
         args['--full-words']=1
-        shift
-        ;;
-
-      # :flag.case
-      --select | -s)
-
-        # :flag.case_no_arg
-        args['--select']=1
         shift
         ;;
 

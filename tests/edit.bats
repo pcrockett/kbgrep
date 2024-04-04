@@ -71,3 +71,14 @@ source tests/util.sh
     assert_stderr '^\$EDITOR environment variable is not defined.$'
     assert_exit_code 1
 }
+
+@test 'edit - interactive mode - treated as search term' {
+    echo "--edit" > edit.txt
+    echo "foo" > foo.txt
+    export KBGREP_INTERACTIVE=1
+    export EDITOR="echo -->"
+    capture_output kbg --edit
+    assert_no_stderr
+    assert_stdout '^edit\.txt$'
+    assert_exit_code 0
+}

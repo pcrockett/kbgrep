@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2030,2031  # exported env vars only take effect inside a test
 
 source tests/util.sh
 
@@ -67,5 +68,27 @@ foo\.txt$'
     assert_no_stderr
     assert_stdout '^bar\.md
 foo\.md$'
+    assert_exit_code 0
+}
+
+@test 'type - while in interactive mode - returns list of files' {
+    export KBGREP_INTERACTIVE=1
+    echo "a" > a.md
+    echo "b" > b.txt
+
+    capture_output kbg --type markdown < <(echo "this should be discarded")
+    assert_no_stderr
+    assert_stdout '^a\.md$'
+    assert_exit_code 0
+}
+
+@test 'type - while in interactive mode (ANY) - returns list of files' {
+    export KBGREP_INTERACTIVE=1
+    echo "a" > foo.md
+    echo "a" > foo.txt
+
+    capture_output kbg --type markdown --any a < <(echo "this should be discarded")
+    assert_no_stderr
+    assert_stdout '^foo\.md$'
     assert_exit_code 0
 }
