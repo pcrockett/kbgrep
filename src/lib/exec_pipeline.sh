@@ -19,12 +19,11 @@ exec_pipeline() {
     #     BAR
     #
     # thanks to <https://stackoverflow.com/a/63981571/138757> for the idea
-    if [ "${KBGREP_INTERACTIVE:-}" = "" ]; then
-        __exec_pipeline "${@}"
-    else
-        # interactive mode: we aren't expecting stdin. if there is any data on stdin,
-        # we should ignore it.
+    if is_interactive; then
+        # we aren't expecting stdin. if there is any data on stdin, we should ignore it.
         __exec_pipeline "${@}" < /dev/null
+    else
+        __exec_pipeline "${@}"
     fi
 }
 

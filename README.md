@@ -24,7 +24,9 @@ and bat underneath.
 
 ### installation
 
-If you've installed the dependencies, just download the [kbg script](kbg), `chmod +x`, and run it.
+If you've installed the dependencies, just
+[download the kbg script](https://github.com/pcrockett/kbgrep/releases/latest/download/kbg),
+`chmod +x`, and run it.
 
 ### usage
 

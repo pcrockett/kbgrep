@@ -90,10 +90,10 @@ f\.txt$'
 
     capture_output sorted kbg a b
     assert_no_stderr
-    assert_stdout '^ab\.txt
-aB\.txt
+    assert_stdout '^AB\.txt
 Ab\.txt
-AB\.txt$'
+aB\.txt
+ab\.txt$'
     assert_exit_code 0
 }
 

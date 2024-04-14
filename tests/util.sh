@@ -36,7 +36,9 @@ sorted() {
     #     b
     #     c
     #
-    "${@}" | sort --stable
+    # i would use the GNU coreutils 'sort', however that doesn't
+    # sort reliably on all linux distros. ruby will do it better.
+    "${@}" | ruby <(echo 'STDIN.readlines.map(&:chomp).sort.each { |line| puts line }')
 }
 
 # shellcheck disable=SC2034  # this function returns data via variables
