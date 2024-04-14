@@ -1,4 +1,5 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2030,2031  # exported env vars only take effect inside a test
 
 source tests/util.sh
 
