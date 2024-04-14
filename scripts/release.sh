@@ -41,7 +41,7 @@ main() {
     init
     run_ci
     local tag url
-    tag="v$(fx src/bashly.yml '.version')"
+    tag="v$(./kbg --version)"
     url="$(create_release "${tag}")"
     echo "new release created: ${url}"
 }

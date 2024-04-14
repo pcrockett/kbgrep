@@ -16,11 +16,6 @@ jobs:
       with:
         version: ^0.8.0
 
-    - name: Install fx
-      run: |
-        curl -SsfL https://raw.githubusercontent.com/pcrockett/rush-repo/main/yolo.sh \
-          | bash -s -- fx
-
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
