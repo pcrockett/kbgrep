@@ -16,6 +16,10 @@ install: kbg
 	cp kbg ~/.local/bin
 .PHONY: install
 
+release:
+	gh workflow run release.yml
+.PHONY: release
+
 kbg: settings.yml src/bashly.yml src/*.sh src/lib/*.sh
 	bashly generate
 
