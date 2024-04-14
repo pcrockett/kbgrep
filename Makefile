@@ -1,15 +1,15 @@
 all: lint test
 .PHONY: all
 
-generate: kbg
-.PHONY: generate
+build: kbg
+.PHONY: build
 
 lint: kbg
 	shellcheck ./kbg src/*.sh tests/*.sh tests/*.bats
 .PHONY: lint
 
 test: kbg
-	bats ./tests
+	bats tests
 .PHONY: test
 
 install: kbg

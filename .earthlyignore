@@ -1,0 +1,13 @@
+*.sublime-*
+.dockerignore
+.earthlyignore
+.editorconfig
+.envrc*
+.git/
+.github/
+.gitignore
+assets/
+Earthfile
+kbg
+LICENSE
+README.md
