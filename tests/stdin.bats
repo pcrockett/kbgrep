@@ -3,6 +3,7 @@
 source tests/util.sh
 
 @test 'stdin - empty - returns nothing' {
+    export KBGREP_ASSUME_TTY=
     echo "a" > a.txt
     capture_output kbg a < /dev/null
     assert_no_stderr
@@ -11,6 +12,7 @@ source tests/util.sh
 }
 
 @test 'stdin - contains file paths - searches only those files' {
+    export KBGREP_ASSUME_TTY=
     echo "a" > "1.txt"
     echo "a" > "2.txt"
     echo "a" > "3.txt"
@@ -22,6 +24,7 @@ source tests/util.sh
 }
 
 @test 'stdin - empty (ANY) - returns nothing' {
+    export KBGREP_ASSUME_TTY=
     echo "a" > a.txt
     capture_output kbg --any a < /dev/null
     assert_no_stderr
@@ -30,6 +33,7 @@ source tests/util.sh
 }
 
 @test 'stdin - contains file paths (ANY) - searches only those files' {
+    export KBGREP_ASSUME_TTY=
     echo "a" > "1.txt"
     echo "a" > "2.txt"
     echo "a" > "3.txt"

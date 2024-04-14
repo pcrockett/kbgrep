@@ -9,7 +9,7 @@ lint: kbg
 .PHONY: lint
 
 test: kbg
-	bats tests
+	KBGREP_ASSUME_TTY=1 bats tests
 .PHONY: test
 
 install: kbg

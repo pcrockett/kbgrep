@@ -1,6 +1,6 @@
 # shellcheck shell=bash
 
-if [ "${#args[@]}" -eq 0 ] && [ "${#other_args[@]}" -eq 0 ] && [ "${KBGREP_INTERACTIVE:-}" = "" ]; then
+if [ "${#args[@]}" -eq 0 ] && [ "${#other_args[@]}" -eq 0 ] && ! is_interactive; then
 
     kbg_command="${0}"
     search_result_command="${EDITOR:-echo}"
@@ -21,7 +21,7 @@ if [ "${#args[@]}" -eq 0 ] && [ "${#other_args[@]}" -eq 0 ] && [ "${KBGREP_INTER
     exit 0
 fi
 
-if [ "${KBGREP_INTERACTIVE:-}" != "" ]; then
+if is_interactive; then
     # handle interactive mode special cases
 
     if [ "${args[--edit]:-}" != "" ]; then
@@ -60,7 +60,7 @@ if [ "${args[--any]:-}" != "" ]; then
         rg_options+=(--type "${args[--type]}")
     fi
 
-    if [ "${KBGREP_INTERACTIVE:-}" != "" ] || tty --quiet; then
+    if is_interactive || is_tty; then
         # either one of these cases may be true:
         #
         # * a tty is connected to stdin
@@ -112,7 +112,7 @@ else
         pipeline+=("${filter_cmd[*]}")
     done
 
-    if [ "${KBGREP_INTERACTIVE:-}" != "" ] || tty --quiet; then
+    if is_interactive || is_tty; then
         # either one of these cases may be true:
         #
         # * a tty is connected to stdin

@@ -89,8 +89,8 @@ b\.txt$'
 }
 
 @test 'any - spaces in stdin file names - still works' {
+    export KBGREP_ASSUME_TTY=
     echo "a" > "foo bar.txt"
-
     capture_output kbg --any a < <(echo "foo bar.txt")
     assert_no_stderr
     assert_stdout '^foo bar\.txt$'

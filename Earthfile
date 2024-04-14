@@ -43,5 +43,4 @@ lint:
 
 test:
     FROM +build
-    # --interactive attaches a tty, which is important for kbgrep
-    RUN --interactive make test
+    RUN make test
