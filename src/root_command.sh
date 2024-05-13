@@ -4,6 +4,7 @@ if [ "${#args[@]}" -eq 0 ] && [ "${#other_args[@]}" -eq 0 ] && ! is_interactive;
 
     kbg_command="${0}"
     search_result_command="${EDITOR:-echo}"
+    bat_pager="less --RAW-CONTROL-CHARS --quiet --ignore-case"
 
     export KBGREP_INTERACTIVE=1
 
@@ -13,7 +14,7 @@ if [ "${#args[@]}" -eq 0 ] && [ "${#other_args[@]}" -eq 0 ] && ! is_interactive;
             --disabled \
             --bind "change:reload(echo {q} | xargs ${kbg_command} || true)" \
             --bind "ctrl-r:reload(echo {q} | xargs ${kbg_command} || true)" \
-            --bind "ctrl-d:execute(bat --color=always --wrap never --pager 'less --RAW-CONTROL-CHARS --quiet' {})" \
+            --bind "ctrl-d:execute(bat --color=always --wrap never --pager '${bat_pager}' {})" \
             --preview "bat --color=always --terminal-width \${FZF_PREVIEW_COLUMNS} --wrap never --paging never {}" \
             --preview-window 'up,70%,border-bottom,+{2}+3/3,~3' \
             --bind "enter:become(${search_result_command} {})"
