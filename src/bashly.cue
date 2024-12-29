@@ -2,7 +2,7 @@ let bin_name = "kbg"
 
 name:    bin_name
 help:    "Knowledgebase grep: A search tool optimized for knowledgebases"
-version: "0.2.1"
+version: "0.2.2"
 dependencies: {
 	rg: "Ripgrep installation instructions: <https://github.com/BurntSushi/ripgrep?tab=readme-ov-file#installation>"
 }
@@ -29,22 +29,22 @@ flags: [{
 }, {
 	long:  "--edit"
 	short: "-e"
-	help: "Edit search results in your \\$EDITOR"
+	help:  "Edit search results in your \\$EDITOR"
 }]
 
 examples: [
-"""
+	"""
 \\
 # Interactive search UI
 \(bin_name)
 """,
-"""
+	"""
 \\
 # Search for markdown files that contain BOTH terms "foo" and "bar"
 # Edit search results with \\$EDITOR
 \(bin_name) --type markdown --edit foo bar
 """,
-"""
+	"""
 \\
 # Search for markdown files containing EITHER "bash" OR "shell"
 # Narrow down search results containing the phrase "mac address"
