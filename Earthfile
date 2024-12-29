@@ -6,7 +6,7 @@ mkdir /repo && \
 chown -R ci_user:ci_user /repo && \
 apt-get update && \
 apt-get install --yes --no-install-recommends \
-    curl ca-certificates git libyaml-dev xz-utils make ripgrep && \
+    curl ca-certificates git libyaml-dev xz-utils make ripgrep build-essential && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER ci_user
