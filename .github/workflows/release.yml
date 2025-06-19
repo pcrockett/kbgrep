@@ -12,10 +12,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - uses: earthly/actions-setup@v1
-      with:
-        version: ^0.8.0
-
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

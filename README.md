@@ -4,17 +4,17 @@ Knowledgebase grep: A search tool optimized for knowledgebases
 
 _Work in progress, but currently usable._
 
-I maintain a personal knowledgebase as a collection of markdown files. As of this writing, I'm up to
-2500 files.
+I maintain a personal knowledgebase as a collection of markdown files. As of this
+writing, I'm up to 2500 files.
 
-I have yet to encounter a good terminal-based search tool for knowledgebases. `grep` and friends are
-wonderful for things like code, config files, etc., however the UX gets _really_ bad _really_ fast
-when I start to search a knowledgebase. The reason is because for knowledgebases, I am often
-looking for a file that has "search term A" and "search term B" _somewhere_ in the same file, but
-they're probably not anywhere near each other.
+I have yet to encounter a good terminal-based search tool for knowledgebases. `grep`
+and friends are wonderful for things like code, config files, etc., however the UX gets
+_really_ bad _really_ fast when I start to search a knowledgebase. The reason is because
+for knowledgebases, I am often looking for a file that has "search term A" and "search
+term B" _somewhere_ in the same file, but they're probably not anywhere near each other.
 
-kbgrep is a bash script that creates a much more ergonomic search experience, using ripgrep, fzf,
-and bat underneath.
+kbgrep is a bash script that creates a much more ergonomic search experience, using
+ripgrep, fzf, and bat underneath.
 
 ### dependencies
 
@@ -24,9 +24,9 @@ and bat underneath.
 
 ### installation
 
-If you've installed the dependencies, just
-[download the kbg script](https://github.com/pcrockett/kbgrep/releases/latest/download/kbg),
-`chmod +x`, and run it.
+If you've installed the dependencies, just [download the kbg
+script](https://github.com/pcrockett/kbgrep/releases/latest/download/kbg), `chmod +x`,
+and run it.
 
 ### usage
 
@@ -40,8 +40,8 @@ kbg
 * Use Ctrl+D to preview a file
 * Hit enter to open the file in your `$EDITOR`
 
-In interactive mode, you are not only able to search for _terms_ but also supply _CLI arguments_ as
-well.
+In interactive mode, you are not only able to search for _terms_ but also supply _CLI
+arguments_ as well.
 
 ![](assets/screenshot.png)
 
