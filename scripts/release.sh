@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-# gets version information from bashly config file and creates a github release
-#
 # dependencies:
 #
-# * fx <https://fx.wtf/>
 # * github cli <https://cli.github.com/>
 #
 
@@ -25,10 +22,8 @@ init() {
 
 run_ci() {
     rm -f kbg
-    earthly +build
+    make ci
     test -f kbg || panic "CI didn't generate a new kbg executable"
-    earthly +lint
-    earthly +test
 }
 
 create_release() {
