@@ -1,3 +1,5 @@
+IMAGE_NAME ?= kbgrep-ci
+
 all: lint test
 .PHONY: all
 
@@ -26,3 +28,13 @@ kbg: settings.yml src/bashly.yml src/*.sh src/lib/*.sh
 src/bashly.yml: src/bashly.cue .tool-versions
 	rm -f src/bashly.yml
 	cue export --outfile src/bashly.yml src/bashly.cue
+
+ci:
+	rm -f kbg src/bashly.yml
+	@docker container rm --force "$(IMAGE_NAME)" &>/dev/null
+	@docker build --tag "$(IMAGE_NAME)" .
+	@docker run --name "$(IMAGE_NAME)" "$(IMAGE_NAME)" make all
+	@docker cp "$(IMAGE_NAME)":/repo/kbg .
+	@docker container rm "$(IMAGE_NAME)" &>/dev/null
+	@test -f kbg
+.PHONY: ci
