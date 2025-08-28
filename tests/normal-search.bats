@@ -3,123 +3,123 @@
 source tests/util.sh
 
 @test 'normal search - no search results - nonzero exit' {
-    echo "a" > a.txt
-    capture_output kbg b
-    assert_no_stderr
-    assert_no_stdout
-    assert_exit_code 1
+  echo "a" >a.txt
+  capture_output kbg b
+  assert_no_stderr
+  assert_no_stdout
+  assert_exit_code 1
 }
 
 @test 'normal search - single term - finds files with term' {
-    echo "a" > a.txt
-    echo "b" > b.txt
-    echo "c
-a" > c.txt
+  echo "a" >a.txt
+  echo "b" >b.txt
+  echo "c
+a" >c.txt
 
-    capture_output sorted kbg a
-    assert_no_stderr
-    assert_stdout '^a\.txt
+  capture_output sorted kbg a
+  assert_no_stderr
+  assert_stdout '^a\.txt
 c\.txt$'
-    assert_exit_code 0
+  assert_exit_code 0
 }
 
 @test 'normal search - many terms - finds files with all terms' {
-    echo "a" > a.txt
-    echo "b" > b.txt
-    echo "ca" > c.txt
-    echo "dbc" > d.txt
-    echo "ebca" > e.txt
-    echo "c
+  echo "a" >a.txt
+  echo "b" >b.txt
+  echo "ca" >c.txt
+  echo "dbc" >d.txt
+  echo "ebca" >e.txt
+  echo "c
 a
 b
-f" > f.txt
+f" >f.txt
 
-    capture_output sorted kbg a b c
-    assert_no_stderr
-    assert_stdout '^e\.txt
+  capture_output sorted kbg a b c
+  assert_no_stderr
+  assert_stdout '^e\.txt
 f\.txt$'
-    assert_exit_code 0
+  assert_exit_code 0
 }
 
 @test 'normal search - funky search terms - escapes properly' {
-    # shellcheck disable=SC2028  # i'm not trying to do escape sequences
-    echo 'foo\bar' > slash.txt
-    echo 'foo"bar' > quote.txt
-    echo 'foo\ bar' > slash-space.txt
-    # shellcheck disable=SC2028  # i'm not trying to do escape sequences
-    echo 'foobar\n' > slash-n.txt
-    echo 'foobar*' > star.txt
+  # shellcheck disable=SC2028  # i'm not trying to do escape sequences
+  echo 'foo\bar' >slash.txt
+  echo 'foo"bar' >quote.txt
+  echo 'foo\ bar' >slash-space.txt
+  # shellcheck disable=SC2028  # i'm not trying to do escape sequences
+  echo 'foobar\n' >slash-n.txt
+  echo 'foobar*' >star.txt
 
-    capture_output kbg 'foo\bar'
-    assert_no_stderr
-    assert_stdout '^slash.txt$'
-    assert_exit_code 0
+  capture_output kbg 'foo\bar'
+  assert_no_stderr
+  assert_stdout '^slash.txt$'
+  assert_exit_code 0
 
-    capture_output kbg 'foo"bar'
-    assert_no_stderr
-    assert_stdout '^quote.txt$'
-    assert_exit_code 0
+  capture_output kbg 'foo"bar'
+  assert_no_stderr
+  assert_stdout '^quote.txt$'
+  assert_exit_code 0
 
-    capture_output kbg 'foo\ bar'
-    assert_no_stderr
-    assert_stdout '^slash-space.txt$'
-    assert_exit_code 0
+  capture_output kbg 'foo\ bar'
+  assert_no_stderr
+  assert_stdout '^slash-space.txt$'
+  assert_exit_code 0
 
-    capture_output kbg 'foobar\n'
-    assert_no_stderr
-    assert_stdout '^slash-n.txt$'
-    assert_exit_code 0
+  capture_output kbg 'foobar\n'
+  assert_no_stderr
+  assert_stdout '^slash-n.txt$'
+  assert_exit_code 0
 
-    capture_output kbg 'foobar*'
-    assert_no_stderr
-    assert_stdout '^star.txt$'
-    assert_exit_code 0
+  capture_output kbg 'foobar*'
+  assert_no_stderr
+  assert_stdout '^star.txt$'
+  assert_exit_code 0
 
-    capture_output kbg 'foo bar'
-    assert_no_stderr
-    assert_no_stdout
-    assert_exit_code 1
+  capture_output kbg 'foo bar'
+  assert_no_stderr
+  assert_no_stdout
+  assert_exit_code 1
 }
 
 @test 'normal search - always - case insensitive' {
-    echo "Ab" > Ab.txt
-    echo "aB" > aB.txt
-    echo "AB" > AB.txt
-    echo "ab" > ab.txt
-    echo "c" > c.txt
+  echo "Ab" >Ab.txt
+  echo "aB" >aB.txt
+  echo "AB" >AB.txt
+  echo "ab" >ab.txt
+  echo "c" >c.txt
 
-    capture_output sorted kbg a b
-    assert_no_stderr
-    assert_stdout '^AB\.txt
+  capture_output sorted kbg a b
+  assert_no_stderr
+  assert_stdout '^AB\.txt
 Ab\.txt
 aB\.txt
 ab\.txt$'
-    assert_exit_code 0
+  assert_exit_code 0
 }
 
 @test 'normal search - parameter name as term - still works' {
-    echo "--type" > foo.txt
+  echo "--type" >foo.txt
 
-    capture_output kbg -- --type
-    assert_no_stderr
-    assert_stdout '^foo\.txt$'
-    assert_exit_code 0
+  capture_output kbg -- --type
+  assert_no_stderr
+  assert_stdout '^foo\.txt$'
+  assert_exit_code 0
 }
 
 @test 'normal search - spaces in file names - still works' {
-    echo "a" > "foo bar.txt"
+  echo "a" >"foo bar.txt"
 
-    capture_output kbg a
-    assert_no_stderr
-    assert_stdout '^foo bar\.txt$'
-    assert_exit_code 0
+  capture_output kbg a
+  assert_no_stderr
+  assert_stdout '^foo bar\.txt$'
+  assert_exit_code 0
 }
 
 @test 'normal search - spaces in stdin file names - still works' {
-    echo "a" > "foo bar.txt"
+  echo "a" >"foo bar.txt"
 
-    capture_output kbg a < <(echo "foo bar.txt")
-    assert_no_stderr
-    assert_stdout '^foo bar\.txt$'
-    assert_exit_code 0
+  capture_output kbg a < <(echo "foo bar.txt")
+  assert_no_stderr
+  assert_stdout '^foo bar\.txt$'
+  assert_exit_code 0
 }
