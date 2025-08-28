@@ -1,5 +1,5 @@
 IMAGE_NAME ?= kbgrep-ci
-ALL_SCRIPTS = tests/*.sh tests/*.bats src/*.sh src/lib/*.sh
+ALL_SCRIPTS = tests/*.sh tests/*.bats src/*.sh src/lib/*.sh scripts/*.sh
 
 all: format lint test
 .PHONY: all
