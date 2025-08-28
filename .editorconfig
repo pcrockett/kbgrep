@@ -8,29 +8,13 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.py]
-indent_style = space
-indent_size = 4
-
-[*.{rst,ini}]
-indent_style = space
-indent_size = 4
-
-[*.{yml,html,xml,xsl,json,md}]
+[*.{yml,yaml,md,sh,bats}]
 indent_style = space
 indent_size = 2
 
-[*.{css,less}]
-indent_style = space
-indent_size = 2
-
-[*.{js,sh,bats}]
-indent_style = space
-indent_size = 4
-
-[{Makefile, makefile, GNUmakefile}]
+[{Makefile}]
 indent_style = tab
-indent_size = 8
+indent_size = 4
 
 [*.cue]
 indent_style = tab

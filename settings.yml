@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://github.com/bashly-framework/bashly/raw/refs/heads/master/schemas/settings.json
+#
 # All settings are optional (with their default values provided below), and
 # can also be set with an environment variable with the same name, capitalized
 # and prefixed by `BASHLY_` - for example: BASHLY_SOURCE_DIR
@@ -61,3 +63,5 @@ usage_colors:
   arg: ~
   flag: ~
   environment_variable: ~
+
+formatter: shfmt --indent 2 --case-indent
