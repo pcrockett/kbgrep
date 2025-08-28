@@ -1,13 +1,18 @@
 IMAGE_NAME ?= kbgrep-ci
+ALL_SCRIPTS = tests/*.sh tests/*.bats src/*.sh src/lib/*.sh
 
-all: lint test
+all: format lint test
 .PHONY: all
 
 build: kbg
 .PHONY: build
 
+format: kbg
+	shfmt --indent 2 --case-indent --write $(ALL_SCRIPTS)
+.PHONY: format
+
 lint: kbg
-	shellcheck ./kbg src/*.sh tests/*.sh tests/*.bats
+	shellcheck ./kbg $(ALL_SCRIPTS)
 .PHONY: lint
 
 test: kbg

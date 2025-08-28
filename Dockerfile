@@ -20,7 +20,8 @@ git config --global advice.detachedHead false && \
 asdf plugin add shellcheck https://github.com/pcrockett/asdf-shellcheck.git && \
 asdf plugin add cue https://github.com/asdf-community/asdf-cue.git && \
 asdf plugin add bashly https://github.com/pcrockett/asdf-bashly.git && \
-asdf plugin add bats https://github.com/pcrockett/asdf-bats.git
+asdf plugin add bats https://github.com/pcrockett/asdf-bats.git && \
+asdf plugin add shfmt https://github.com/pcrockett/asdf-shfmt.git
 
 WORKDIR /repo
 
