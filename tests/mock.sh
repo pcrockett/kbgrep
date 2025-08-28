@@ -8,25 +8,25 @@ set -Eeuo pipefail
 # running `fzf`.
 
 log_stderr() {
-    echo "${*}" >&2
+  echo "${*}" >&2
 }
 
 log_stderr "program_name=$(basename "${0}")"
 for arg in "${@}"; do
-    escaped_arg="$(printf '%q' "${arg}")"
-    log_stderr "arg=${escaped_arg}"
+  escaped_arg="$(printf '%q' "${arg}")"
+  log_stderr "arg=${escaped_arg}"
 done
 
 if tty --quiet; then
-    log_stderr "stdin="
+  log_stderr "stdin="
 else
-    log_stderr "stdin=$(cat)"
+  log_stderr "stdin=$(cat)"
 fi
 
 test -v MOCK_STDOUT && echo "${MOCK_STDOUT}"
 
 if [ "${MOCK_EXIT_CODE:-}" = "" ]; then
-    exit 0
+  exit 0
 else
-    exit "${MOCK_EXIT_CODE}"
+  exit "${MOCK_EXIT_CODE}"
 fi

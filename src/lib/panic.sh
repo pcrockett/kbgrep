@@ -1,6 +1,6 @@
 # shellcheck shell=bash
 
 panic() {
-    echo "${*}" >&2
-    exit 1
+  echo "${*}" >&2
+  exit 1
 }
