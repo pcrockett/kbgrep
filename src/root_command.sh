@@ -1,24 +1,7 @@
 # shellcheck shell=bash
 
 if [ "${#args[@]}" -eq 0 ] && [ "${#other_args[@]}" -eq 0 ] && ! is_interactive; then
-
-  kbg_command="${0}"
-  search_result_command="${EDITOR:-echo}"
-  bat_pager="less --RAW-CONTROL-CHARS --quiet --ignore-case"
-
-  export KBGREP_INTERACTIVE=1
-
-  FZF_DEFAULT_COMMAND="${kbg_command}" \
-    SHELL=sh \
-    fzf --ansi \
-    --disabled \
-    --bind "change:reload(echo {q} | xargs ${kbg_command} || true)" \
-    --bind "ctrl-r:reload(echo {q} | xargs ${kbg_command} || true)" \
-    --bind "ctrl-d:execute(bat --color=always --wrap never --pager '${bat_pager}' --plain {})" \
-    --preview "bat --color=always --terminal-width \${FZF_PREVIEW_COLUMNS} --wrap never --paging never --plain {}" \
-    --preview-window 'up,70%,border-bottom,+{2}+3/3,~3' \
-    --bind "enter:become(${search_result_command} {})"
-
+  interactive_fzf_ui
   exit 0
 fi
 
@@ -50,7 +33,7 @@ if [ "${args["--edit"]:-}" != "" ] && [ "${EDITOR:-}" = "" ]; then
   panic '$EDITOR environment variable is not defined.'
 fi
 
-if [ "${args["--any"]:-}" != "" ]; then
+find_any() {
   # find files with ANY term. easy case, `rg` supports this natively.
 
   if [ ${#terms[@]} -eq 0 ]; then
@@ -93,8 +76,9 @@ if [ "${args["--any"]:-}" != "" ]; then
   else
     exec_pipeline "${pipeline[@]}"
   fi
+}
 
-else
+find_all() {
   # find files with ALL terms. difficult case, need to pipeline multiple `rg` invocations.
   #
   # given search terms "foo" and "bar", we will effectively construct the following
@@ -138,4 +122,10 @@ else
   else
     exec_pipeline "${pipeline[@]}"
   fi
+}
+
+if [ "${args["--any"]:-}" != "" ]; then
+  find_any
+else
+  find_all
 fi
