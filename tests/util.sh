@@ -64,8 +64,8 @@ capture_exit_code() {
 }
 
 assert_exit_code() {
-  test "${TEST_EXIT_CODE}" -eq "${1}" ||
-    fail "Expected exit code ${1}; got ${TEST_EXIT_CODE}"
+  test "${TEST_EXIT_CODE}" -eq "${1}" \
+    || fail "Expected exit code ${1}; got ${TEST_EXIT_CODE}"
 }
 
 assert_stdout() {

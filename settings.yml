@@ -64,4 +64,4 @@ usage_colors:
   flag: ~
   environment_variable: ~
 
-formatter: shfmt --indent 2 --case-indent
+formatter: shfmt

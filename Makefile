@@ -8,7 +8,7 @@ build: kbg
 .PHONY: build
 
 format: kbg
-	shfmt --indent 2 --case-indent --write $(ALL_SCRIPTS)
+	shfmt --write $(ALL_SCRIPTS)
 .PHONY: format
 
 lint: kbg
